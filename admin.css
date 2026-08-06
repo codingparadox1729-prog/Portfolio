@@ -1,0 +1,163 @@
+/* ==========================================================================
+   Rishabh Dimri Portfolio - Admin Dashboard Stylesheet
+   Theme: Minimal Dark Glassmorphism, Admin Controls & Dynamic Drag-Drop UI
+   ========================================================================== */
+
+/* Custom CSS Variables */
+:root {
+    --bg-dark-900: #05070d;
+    --bg-dark-800: #0b0f19;
+    --bg-dark-700: #131a2a;
+    --bg-dark-card: rgba(19, 26, 42, 0.6);
+    --electric-blue: #0ea5e9;
+    --neon-purple: #a855f7;
+    --border-glass: rgba(255, 255, 255, 0.08);
+    --border-glass-hover: rgba(14, 165, 233, 0.35);
+    --shadow-glow: 0 0 25px rgba(14, 165, 233, 0.15);
+}
+
+/* Baseline Reset */
+html {
+    color-scheme: dark;
+}
+
+body {
+    background-color: var(--bg-dark-900);
+    color: #f8fafc;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark-900);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--electric-blue);
+}
+
+/* Selection Color */
+::selection {
+    background: var(--electric-blue);
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   Glassmorphism Surfaces
+   ========================================================================== */
+
+.glass-card {
+    background: var(--bg-dark-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-glass);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+    border-color: var(--border-glass-hover);
+}
+
+/* ==========================================================================
+   Drag & Drop Active State Highlights
+   ========================================================================== */
+
+.drop-zone-active {
+    border-color: var(--electric-blue) !important;
+    background-color: rgba(14, 165, 233, 0.12) !important;
+    transform: scale(1.01);
+}
+
+/* ==========================================================================
+   Toast Notification Micro-Animations
+   ========================================================================== */
+
+.toast {
+    animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toast-exit {
+    animation: slideOutRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+}
+
+/* ==========================================================================
+   Image Gallery Preview Thumbnails
+   ========================================================================== */
+
+.preview-thumb {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.preview-thumb:hover {
+    transform: translateY(-2px);
+    border-color: var(--electric-blue);
+}
+
+.preview-thumb .remove-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 7, 13, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.preview-thumb:hover .remove-overlay {
+    opacity: 1;
+}
+
+/* ==========================================================================
+   Responsive Utilities
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .glass-card {
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+}
