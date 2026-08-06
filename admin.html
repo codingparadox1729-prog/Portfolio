@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Rishabh Dimri Portfolio</title>
+    
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            900: '#05070D',
+                            800: '#0B0F19',
+                            700: '#131A2A',
+                            600: '#1E293B',
+                        },
+                        electric: {
+                            400: '#38BDF8',
+                            500: '#0EA5E9',
+                            600: '#0284C7',
+                        },
+                        neon: {
+                            purple: '#A855F7',
+                            violet: '#6366F1',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Admin Custom Stylesheet -->
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body class="bg-dark-900 text-slate-100 font-sans antialiased selection:bg-electric-500 selection:text-white min-h-screen relative overflow-x-hidden">
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full p-6 rounded-2xl border border-white/10 text-center flex flex-col items-center gap-4">
+            <div class="w-14 h-14 rounded-full bg-rose-500/10 text-rose-500 border border-rose-500/20 flex items-center justify-center text-2xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white" id="confirmTitle">Confirm Action</h3>
+            <p class="text-slate-400 text-sm" id="confirmMessage">Are you sure you want to proceed?</p>
+            <div class="flex items-center gap-3 w-full mt-2">
+                <button id="cancelConfirmBtn" class="flex-1 py-2.5 rounded-xl bg-dark-700 hover:bg-dark-600 text-slate-300 font-medium text-sm transition-colors border border-white/10">
+                    Cancel
+                </button>
+                <button id="actionConfirmBtn" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-medium text-sm transition-colors">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         SECURITY NOTICE (DEMO ONLY)
+         NOTE: Client-side authentication via Local Storage is strictly for
+         demonstration purposes. In production, connect this frontend to a Node.js +
+         Express API using JWT/session tokens and MongoDB for data storage.
+         ========================================================================== -->
+
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4 relative z-10">
+        <div class="glass-card w-full max-w-md p-8 rounded-3xl border border-white/10 shadow-2xl relative overflow-hidden">
+            <!-- Ambient Glow -->
+            <div class="absolute -top-20 -right-20 w-40 h-40 bg-electric-500/20 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-neon-purple/20 rounded-full blur-3xl"></div>
+
+            <div class="text-center mb-8">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-electric-500 to-neon-purple mx-auto flex items-center justify-center text-white text-2xl font-mono font-bold mb-4 shadow-lg shadow-electric-500/25">
+                    RD
+                </div>
+                <h1 class="text-2xl font-bold text-white mb-1">Admin Portal Access</h1>
+                <p class="text-xs text-slate-400 font-mono">Sign in to manage portfolio projects</p>
+            </div>
+
+            <!-- Login Security Disclaimer -->
+            <div class="mb-6 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs flex items-start gap-2">
+                <i class="fa-solid fa-shield-halved text-sm mt-0.5"></i>
+                <span>Demo Auth Enabled. Data persists in browser LocalStorage.</span>
+            </div>
+
+            <form id="loginForm" class="flex flex-col gap-5">
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-mono text-slate-300">Username</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" id="loginUsername" required placeholder="Enter username" class="w-full bg-dark-700/80 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-electric-500 transition-colors text-sm">
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-mono text-slate-300">Password</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full bg-dark-700/80 border border-white/10 rounded-xl pl-11 pr-10 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-electric-500 transition-colors text-sm">
+                        <button type="button" id="togglePasswordBtn" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-sm p-1">
+                            <i class="fa-solid fa-eye" id="passwordEyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-electric-500 to-neon-purple text-white font-semibold text-sm shadow-lg shadow-electric-500/25 hover:shadow-electric-500/40 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 mt-2">
+                    <span>Authenticate</span>
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <a href="index.html" class="text-xs text-slate-400 hover:text-electric-400 transition-colors inline-flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Main Website
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD (Hidden until logged in) -->
+    <div id="adminDashboard" class="hidden min-h-screen flex flex-col md:flex-row">
+
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-dark-800 border-r border-white/10 p-6 flex flex-col justify-between flex-shrink-0">
+            <div>
+                <!-- Brand Badge -->
+                <div class="flex items-center gap-3 pb-6 border-b border-white/10 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-electric-500 to-neon-purple flex items-center justify-center text-white font-mono font-bold text-lg shadow-md">
+                        RD
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-sm text-white">Rishabh Dimri</h2>
+                        <span class="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Admin Session Active
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="flex flex-col gap-2">
+                    <a href="#" id="navProjectsTab" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-electric-500/10 text-electric-400 border border-electric-500/20 font-medium text-sm transition-all">
+                        <i class="fa-solid fa-folder-kanban"></i> Projects Manager
+                    </a>
+                    <a href="index.html" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 font-medium text-sm transition-all">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> View Portfolio Site
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Sidebar Footer & Logout -->
+            <div class="pt-6 border-t border-white/10">
+                <button id="logoutBtn" class="w-full py-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs font-mono font-semibold transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Workspace -->
+        <main class="flex-1 bg-dark-900 p-6 md:p-10 overflow-y-auto">
+            
+            <!-- Dashboard Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-white/10">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Project Management Engine</h1>
+                    <p class="text-xs text-slate-400 font-mono mt-1">Add, edit, reorder, or delete portfolio projects synced via LocalStorage</p>
+                </div>
+                <button id="openAddModalBtn" class="px-5 py-3 rounded-xl bg-gradient-to-r from-electric-500 to-neon-purple hover:from-electric-600 hover:to-purple-600 text-white font-semibold text-sm shadow-lg shadow-electric-500/20 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Add New Project
+                </button>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+                <div class="glass-card p-5 rounded-2xl border border-white/10 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-electric-500/10 text-electric-400 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 block font-mono">Total Projects</span>
+                        <span class="text-2xl font-bold text-white font-mono" id="statProjectCount">0</span>
+                    </div>
+                </div>
+                <div class="glass-card p-5 rounded-2xl border border-white/10 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-database"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 block font-mono">Storage Engine</span>
+                        <span class="text-sm font-bold text-white font-mono">HTML5 LocalStorage</span>
+                    </div>
+                </div>
+                <div class="glass-card p-5 rounded-2xl border border-white/10 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-neon-purple/10 text-neon-purple flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 block font-mono">Sync Status</span>
+                        <span class="text-sm font-bold text-emerald-400 font-mono">Real-time Auto Sync</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects Grid List -->
+            <div id="adminProjectsList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Dynamically populated by admin.js -->
+            </div>
+
+        </main>
+    </div>
+
+    <!-- PROJECT EDITOR MODAL (Add / Edit) -->
+    <div id="projectModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="glass-card w-full max-w-3xl p-6 sm:p-8 rounded-3xl border border-white/10 shadow-2xl relative my-8">
+            <div class="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
+                <h3 class="text-xl font-bold text-white" id="modalTitle">Add New Project</h3>
+                <button id="closeModalBtn" class="text-slate-400 hover:text-white text-xl p-2 focus:outline-none">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="projectForm" class="flex flex-col gap-6">
+                <input type="hidden" id="projectId">
+
+                <!-- Title Input -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-mono text-slate-300">Project Title *</label>
+                    <input type="text" id="projectTitleInput" required placeholder="e.g. Enterprise E-Commerce Dashboard" class="w-full bg-dark-700/80 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-electric-500 transition-colors text-sm">
+                </div>
+
+                <!-- Description Input with Word Counter -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-mono text-slate-300">Project Description (Up to 100 words) *</label>
+                        <span id="wordCountBadge" class="text-[10px] font-mono text-slate-400">0 / 100 words</span>
+                    </div>
+                    <textarea id="projectDescInput" rows="4" required placeholder="Write a brief, high-impact description of the project..." class="w-full bg-dark-700/80 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-electric-500 transition-colors text-sm resize-none"></textarea>
+                </div>
+
+                <!-- Technology Tags Input -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-mono text-slate-300">Technology Badges (Comma separated) *</label>
+                    <input type="text" id="projectTagsInput" required placeholder="React, Node.js, Tailwind CSS, MongoDB" class="w-full bg-dark-700/80 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-electric-500 transition-colors text-sm">
+                </div>
+
+                <!-- Links Grid -->
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-mono text-slate-300">Live Demo URL</label>
+                        <input type="url" id="projectDemoInput" placeholder="https://example.com" class="w-full bg-dark-700/80 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-electric-500 transition-colors text-sm">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-mono text-slate-300">GitHub Repository URL</label>
+                        <input type="url" id="projectGithubInput" placeholder="https://github.com/codingparadox1729/repo" class="w-full bg-dark-700/80 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-electric-500 transition-colors text-sm">
+                    </div>
+                </div>
+
+                <!-- Drag and Drop Image Upload Zone -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs font-mono text-slate-300">Project Screenshots (Up to 10 images) *</label>
+                    <div id="dropZone" class="border-2 border-dashed border-white/20 hover:border-electric-500 rounded-2xl p-6 text-center bg-dark-700/40 transition-colors cursor-pointer flex flex-col items-center justify-center gap-3">
+                        <i class="fa-solid fa-cloud-arrow-up text-3xl text-electric-400"></i>
+                        <div>
+                            <p class="text-sm font-medium text-slate-200">Drag & drop image files here, or <span class="text-electric-400 underline">browse</span></p>
+                            <p class="text-[10px] text-slate-400 font-mono mt-1">Supports PNG, JPG, WEBP, GIF (Max 10 images total)</p>
+                        </div>
+                        <input type="file" id="imageFileInput" multiple accept="image/*" class="hidden">
+                    </div>
+
+                    <!-- Image Preview Gallery Container -->
+                    <div id="imagePreviewContainer" class="grid grid-cols-2 sm:grid-cols-5 gap-3 mt-3"></div>
+                </div>
+
+                <!-- Form Action Buttons -->
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+                    <button type="button" id="cancelModalBtn" class="px-5 py-2.5 rounded-xl bg-dark-700 hover:bg-dark-600 text-slate-300 text-sm font-medium transition-colors border border-white/10">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-electric-500 to-neon-purple text-white text-sm font-semibold shadow-lg shadow-electric-500/20 hover:shadow-electric-500/40 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Project
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Script -->
+    <script src="admin.js"></script>
+</body>
+</html>
