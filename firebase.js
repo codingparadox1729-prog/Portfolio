@@ -3,12 +3,13 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase
 
 // Replace the values below with your actual keys from Step 3
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBcb9szMGtzurNupPhiG_ZPcTVYcrjv7jA",
+  authDomain: "codingparadox-portfolio.firebaseapp.com",
+  projectId: "codingparadox-portfolio",
+  storageBucket: "codingparadox-portfolio.firebasestorage.app",
+  messagingSenderId: "918702015853",
+  appId: "1:918702015853:web:fe7002abc0b017c818c664",
+  measurementId: "G-EER0GMMXR5"
 };
 
 const app = initializeApp(firebaseConfig);
