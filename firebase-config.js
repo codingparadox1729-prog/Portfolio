@@ -4,13 +4,13 @@ import { getDatabase, ref, set, push, onValue, remove, update } from "https://ww
 
 // Your Firebase Configuration Object (Replace with your keys from Firebase Console)
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBcb9szMGtzurNupPhiG_ZPcTVYcrjv7jA",
+  authDomain: "codingparadox-portfolio.firebaseapp.com",
+  projectId: "codingparadox-portfolio",
+  storageBucket: "codingparadox-portfolio.firebasestorage.app",
+  messagingSenderId: "918702015853",
+  appId: "1:918702015853:web:fe7002abc0b017c818c664",
+  measurementId: "G-EER0GMMXR5"
 };
 
 // Initialize Firebase App
