@@ -1,255 +1,380 @@
-import { db } from "./firebase.js";
-import { 
-    collection, 
-    getDocs, 
-    doc, 
-    setDoc, 
-    deleteDoc 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+/* ==========================================================================
+   Rishabh Dimri Portfolio - Admin Control Engine
+   Engineered with JS, Base64 File Processing & Firebase Realtime Database
+   ========================================================================== */
 
-// Global state
-let projects = [];
-let editingProjectId = null;
-let pendingDeleteId = null;
-//
-// Add these to your DOM elements section at the top of admin.js
-const loginForm = document.getElementById('loginForm');
-const loginSection = document.getElementById('loginSection'); // Or whatever container holds your login card
-const dashboardSection = document.getElementById('dashboardSection'); // The admin panel wrapper
+import { db, ref, onValue, set } from './firebase.js';
 
-// Handle Admin Authentication
-if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault(); // Stops page from refreshing on submit
+document.addEventListener('DOMContentLoaded', () => {
 
-        const usernameInput = document.getElementById('usernameInput')?.value || '';
-        const passwordInput = document.getElementById('passwordInput')?.value || '';
+    const ADMIN_USER = "admin";
+    const ADMIN_PASS = "rishabh123";
 
-        // Replace 'admin' and 'admin123' with your preferred credentials
-        if (usernameInput === 'admin' && passwordInput === 'admin123') {
-            localStorage.setItem('isAdminLoggedIn', 'true');
-            showDashboard();
-            showToast('Logged in successfully!', 'success');
+    let currentImages = [];
+    let projects = [];
+    let pendingDeleteId = null;
+
+    // DOM Elements
+    const loginScreen = document.getElementById('loginScreen');
+    const adminDashboard = document.getElementById('adminDashboard');
+    const loginForm = document.getElementById('loginForm');
+    const loginUsername = document.getElementById('loginUsername');
+    const loginPassword = document.getElementById('loginPassword');
+    const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+    const passwordEyeIcon = document.getElementById('passwordEyeIcon');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    const adminProjectsList = document.getElementById('adminProjectsList');
+    const statProjectCount = document.getElementById('statProjectCount');
+
+    const projectModal = document.getElementById('projectModal');
+    const openAddModalBtn = document.getElementById('openAddModalBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const cancelModalBtn = document.getElementById('cancelModalBtn');
+    const projectForm = document.getElementById('projectForm');
+
+    const modalTitle = document.getElementById('modalTitle');
+    const projectIdInput = document.getElementById('projectId');
+    const projectTitleInput = document.getElementById('projectTitleInput');
+    const projectDescInput = document.getElementById('projectDescInput');
+    const wordCountBadge = document.getElementById('wordCountBadge');
+    const projectTagsInput = document.getElementById('projectTagsInput');
+    const projectDemoInput = document.getElementById('projectDemoInput');
+    const projectGithubInput = document.getElementById('projectGithubInput');
+
+    const dropZone = document.getElementById('dropZone');
+    const imageFileInput = document.getElementById('imageFileInput');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+
+    const confirmModal = document.getElementById('confirmModal');
+    const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
+    const actionConfirmBtn = document.getElementById('actionConfirmBtn');
+    const toastContainer = document.getElementById('toastContainer');
+
+    // 1. Authentication Engine
+    function checkAuth() {
+        const isAuthenticated = sessionStorage.getItem('portfolio_admin_auth') === 'true';
+        if (isAuthenticated) {
+            loginScreen.classList.add('hidden');
+            adminDashboard.classList.remove('hidden');
+            subscribeToFirebase();
         } else {
-            showToast('Invalid username or password', 'error');
+            loginScreen.classList.remove('hidden');
+            adminDashboard.add('hidden');
+        }
+    }
+
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const user = loginUsername.value.trim();
+        const pass = loginPassword.value.trim();
+
+        if (user === ADMIN_USER && pass === ADMIN_PASS) {
+            sessionStorage.setItem('portfolio_admin_auth', 'true');
+            showToast('Authenticated successfully!', 'success');
+            checkAuth();
+        } else {
+            showToast('Invalid credentials! Use: admin / rishabh123', 'error');
         }
     });
-}
 
-// Function to toggle views based on login status
-function showDashboard() {
-    if (localStorage.getItem('isAdminLoggedIn') === 'true') {
-        if (loginSection) loginSection.classList.add('hidden');
-        if (dashboardSection) dashboardSection.classList.remove('hidden');
-        loadProjects(); // Fetch projects from Firestore upon login
+    togglePasswordBtn.addEventListener('click', () => {
+        const isPassword = loginPassword.type === 'password';
+        loginPassword.type = isPassword ? 'text' : 'password';
+        passwordEyeIcon.className = isPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+    });
+
+    logoutBtn.addEventListener('click', () => {
+        sessionStorage.removeItem('portfolio_admin_auth');
+        showToast('Logged out successfully', 'info');
+        checkAuth();
+    });
+
+    // 2. Realtime Firebase Subscription
+    function subscribeToFirebase() {
+        const projectsRef = ref(db, 'portfolio_projects');
+        onValue(projectsRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                projects = Array.isArray(data) ? data : Object.values(data);
+            } else {
+                projects = [];
+            }
+            renderProjectsList();
+        });
     }
-}
 
-// Check session on page load
-showDashboard();
-//
+    function saveProjectsToFirebase() {
+        set(ref(db, 'portfolio_projects'), projects);
+    }
 
-// DOM Elements
-const projectForm = document.getElementById('projectForm');
-const formTitle = document.getElementById('formTitle');
-const submitBtnText = document.getElementById('submitBtnText');
-const cancelEditBtn = document.getElementById('cancelEditBtn');
-const projectsList = document.getElementById('projectsList');
-const confirmModal = document.getElementById('confirmModal');
-const actionConfirmBtn = document.getElementById('actionConfirmBtn');
-const cancelModalBtn = document.getElementById('cancelModalBtn');
+    // 3. Render Admin Projects List
+    function renderProjectsList() {
+        adminProjectsList.innerHTML = '';
+        if (statProjectCount) statProjectCount.textContent = projects.length;
 
-// Toast Notification System
-function showToast(message, type = 'info') {
-    const container = document.getElementById('toastContainer');
-    if (!container) return;
+        if (projects.length === 0) {
+            adminProjectsList.innerHTML = `
+                <div class="col-span-full glass-card p-12 rounded-3xl text-center border border-white/10">
+                    <i class="fa-solid fa-folder-open text-4xl text-slate-500 mb-3"></i>
+                    <h4 class="text-lg font-bold text-slate-300">No Projects Found</h4>
+                    <p class="text-xs text-slate-500 mt-1">Click "Add New Project" above to create your first portfolio entry.</p>
+                </div>
+            `;
+            return;
+        }
 
-    const toast = document.createElement('div');
-    const bgColors = {
-        success: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
-        error: 'bg-rose-500/10 border-rose-500/20 text-rose-400',
-        info: 'bg-electric-500/10 border-electric-500/20 text-electric-400'
+        projects.forEach((project) => {
+            const thumbnail = (project.images && project.images.length > 0)
+                ? project.images[0]
+                : 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop';
+
+            const tagsHTML = (project.tags || [])
+                .map(t => `<span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-[10px] font-mono text-slate-300">${t}</span>`)
+                .join('');
+
+            const cardHTML = `
+                <div class="glass-card p-6 rounded-2xl border border-white/10 flex flex-col justify-between gap-4 relative group">
+                    <div>
+                        <div class="aspect-video w-full rounded-xl overflow-hidden mb-4 border border-white/10 bg-dark-700 relative">
+                            <img src="${thumbnail}" alt="${project.title}" class="w-full h-full object-cover">
+                            <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-mono bg-black/60 backdrop-blur-md text-electric-400 border border-white/10">
+                                ${project.images ? project.images.length : 0} image(s)
+                            </span>
+                        </div>
+                        <h4 class="text-lg font-bold text-white mb-2">${project.title}</h4>
+                        <p class="text-slate-400 text-xs line-clamp-2 leading-relaxed mb-4">${project.description}</p>
+                        <div class="flex flex-wrap gap-1.5 mb-2">
+                            ${tagsHTML}
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 pt-4 border-t border-white/10">
+                        <button onclick="editProject('${project.id}')" class="flex-1 py-2 rounded-xl bg-electric-500/10 hover:bg-electric-500/20 text-electric-400 border border-electric-500/20 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                        </button>
+                        <button onclick="promptDeleteProject('${project.id}')" class="py-2 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs font-semibold transition-colors">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            adminProjectsList.insertAdjacentHTML('beforeend', cardHTML);
+        });
+    }
+
+    window.editProject = function (id) {
+        const project = projects.find(p => p.id === id);
+        if (!project) return;
+
+        modalTitle.textContent = "Edit Project";
+        projectIdInput.value = project.id;
+        projectTitleInput.value = project.title || '';
+        projectDescInput.value = project.description || '';
+        projectTagsInput.value = (project.tags || []).join(', ');
+        projectDemoInput.value = project.demoUrl || '';
+        projectGithubInput.value = project.githubUrl || '';
+
+        currentImages = [...(project.images || [])];
+        renderImagePreviews();
+        updateWordCount();
+        openModal();
     };
 
-    toast.className = `p-4 rounded-xl border backdrop-blur-md transition-all duration-300 flex items-center justify-between shadow-lg mb-3 ${bgColors[type] || bgColors.info}`;
-    toast.innerHTML = `
-        <div class="flex items-center gap-3">
-            <span class="text-sm font-medium">${message}</span>
-        </div>
-    `;
+    window.promptDeleteProject = function (id) {
+        pendingDeleteId = id;
+        confirmModal.classList.remove('hidden');
+    };
 
-    container.appendChild(toast);
-    setTimeout(() => {
-        toast.classList.add('opacity-0', 'translate-x-4');
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
-}
-
-// 1. Fetch projects from Firestore
-async function loadProjects() {
-    projects = [];
-    try {
-        const querySnapshot = await getDocs(collection(db, "projects"));
-        querySnapshot.forEach((docSnap) => {
-            projects.push({ id: docSnap.id, ...docSnap.data() });
-        });
-        renderProjectsList();
-    } catch (error) {
-        console.error("Error fetching projects from Firestore: ", error);
-        showToast("Error loading projects from database", "error");
-    }
-}
-
-// 2. Render Projects in Admin Table
-function renderProjectsList() {
-    if (!projectsList) return;
-
-    if (projects.length === 0) {
-        projectsList.innerHTML = `
-            <tr>
-                <td colspan="4" class="px-6 py-8 text-center text-slate-400">
-                    No projects found. Add your first project above!
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
-    projectsList.innerHTML = projects.map(project => `
-        <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
-            <td class="px-6 py-4">
-                <div class="font-medium text-white">${project.title || 'Untitled Project'}</div>
-                <div class="text-xs text-slate-400 truncate max-w-xs">${project.description || ''}</div>
-            </td>
-            <td class="px-6 py-4">
-                <div class="flex flex-wrap gap-1">
-                    ${(project.tags || []).map(tag => `
-                        <span class="px-2 py-0.5 text-xs rounded bg-white/5 border border-white/10 text-slate-300">${tag}</span>
-                    `).join('')}
-                </div>
-            </td>
-            <td class="px-6 py-4 text-xs font-mono text-slate-400">
-                ${project.demoUrl ? `<a href="${project.demoUrl}" target="_blank" class="text-electric-400 hover:underline">Demo</a>` : ''}
-                ${project.demoUrl && project.githubUrl ? ' | ' : ''}
-                ${project.githubUrl ? `<a href="${project.githubUrl}" target="_blank" class="text-slate-300 hover:underline">GitHub</a>` : ''}
-            </td>
-            <td class="px-6 py-4 text-right space-x-2">
-                <button onclick="editProject('${project.id}')" class="p-2 text-slate-400 hover:text-white transition-colors">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                </button>
-                <button onclick="promptDelete('${project.id}')" class="p-2 text-rose-400 hover:text-rose-300 transition-colors">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </td>
-        </tr>
-    `).join('');
-}
-
-// 3. Form Submit Handler (Save / Update Firestore Document)
-if (projectForm) {
-    projectForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const title = document.getElementById('projectTitle').value.trim();
-        const description = document.getElementById('projectDescription').value.trim();
-        const demoUrl = document.getElementById('demoUrl').value.trim();
-        const githubUrl = document.getElementById('githubUrl').value.trim();
-        const tagsInput = document.getElementById('projectTags').value.trim();
-        const imagesInput = document.getElementById('projectImages').value.trim();
-
-        const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(Boolean) : [];
-        const images = imagesInput ? imagesInput.split(',').map(i => i.trim()).filter(Boolean) : [];
-
-        const projectId = editingProjectId || 'proj_' + Date.now();
-
-        const projectData = {
-            id: projectId,
-            title,
-            description,
-            demoUrl,
-            githubUrl,
-            tags,
-            images,
-            updatedAt: new Date().toISOString()
-        };
-
-        try {
-            // Save to Firestore
-            await setDoc(doc(db, "projects", projectId), projectData);
-
-            showToast(editingProjectId ? 'Project updated successfully!' : 'Project added successfully!', 'success');
-            resetForm();
-            await loadProjects();
-        } catch (error) {
-            console.error("Error saving project: ", error);
-            showToast('Failed to save project to Firestore', 'error');
-        }
-    });
-}
-
-// 4. Edit Project Setup
-window.editProject = function(id) {
-    const project = projects.find(p => p.id === id);
-    if (!project) return;
-
-    editingProjectId = id;
-    document.getElementById('projectTitle').value = project.title || '';
-    document.getElementById('projectDescription').value = project.description || '';
-    document.getElementById('demoUrl').value = project.demoUrl || '';
-    document.getElementById('githubUrl').value = project.githubUrl || '';
-    document.getElementById('projectTags').value = (project.tags || []).join(', ');
-    document.getElementById('projectImages').value = (project.images || []).join(', ');
-
-    if (formTitle) formTitle.textContent = 'Edit Project';
-    if (submitBtnText) submitBtnText.textContent = 'Update Project';
-    if (cancelEditBtn) cancelEditBtn.classList.remove('hidden');
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-// Reset Form Function
-function resetForm() {
-    editingProjectId = null;
-    if (projectForm) projectForm.reset();
-    if (formTitle) formTitle.textContent = 'Add New Project';
-    if (submitBtnText) submitBtnText.textContent = 'Save Project';
-    if (cancelEditBtn) cancelEditBtn.classList.add('hidden');
-}
-
-if (cancelEditBtn) {
-    cancelEditBtn.addEventListener('click', resetForm);
-}
-
-// 5. Delete Project Modal & Firestore Delete Action
-window.promptDelete = function(id) {
-    pendingDeleteId = id;
-    if (confirmModal) confirmModal.classList.remove('hidden');
-};
-
-if (cancelModalBtn) {
-    cancelModalBtn.addEventListener('click', () => {
+    cancelConfirmBtn.addEventListener('click', () => {
         pendingDeleteId = null;
-        if (confirmModal) confirmModal.classList.add('hidden');
+        confirmModal.classList.add('hidden');
     });
-}
 
-if (actionConfirmBtn) {
-    actionConfirmBtn.addEventListener('click', async () => {
+    actionConfirmBtn.addEventListener('click', () => {
         if (pendingDeleteId) {
-            try {
-                // Delete document from Firestore
-                await deleteDoc(doc(db, "projects", pendingDeleteId));
-                showToast('Project deleted successfully', 'info');
-                await loadProjects();
-            } catch (error) {
-                console.error("Error deleting project: ", error);
-                showToast('Failed to delete project', 'error');
-            }
+            projects = projects.filter(p => p.id !== pendingDeleteId);
+            saveProjectsToFirebase();
+            showToast('Project deleted across all devices', 'info');
             pendingDeleteId = null;
         }
-        if (confirmModal) confirmModal.classList.add('hidden');
+        confirmModal.classList.add('hidden');
     });
-}
 
-// Initial Load
-loadProjects();
+    // 4. Modal Engine & Form Handling
+    function openModal() {
+        projectModal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+        projectModal.classList.add('hidden');
+        projectForm.reset();
+        projectIdInput.value = '';
+        currentImages = [];
+        renderImagePreviews();
+        updateWordCount();
+    }
+
+    openAddModalBtn.addEventListener('click', () => {
+        modalTitle.textContent = "Add New Project";
+        closeModal();
+        openModal();
+    });
+
+    closeModalBtn.addEventListener('click', closeModal);
+    cancelModalBtn.addEventListener('click', closeModal);
+
+    function updateWordCount() {
+        const words = projectDescInput.value.trim().split(/\s+/).filter(w => w.length > 0);
+        const count = words.length;
+        wordCountBadge.textContent = `${count} / 100 words`;
+
+        if (count > 100) {
+            wordCountBadge.classList.add('text-rose-400');
+            wordCountBadge.classList.remove('text-slate-400');
+        } else {
+            wordCountBadge.classList.remove('text-rose-400');
+            wordCountBadge.classList.add('text-slate-400');
+        }
+    }
+
+    projectDescInput.addEventListener('input', updateWordCount);
+
+    // 5. Base64 File Processing Engine
+    dropZone.addEventListener('click', () => imageFileInput.click());
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.add('drop-zone-active');
+        }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.remove('drop-zone-active');
+        }, false);
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        handleFiles(e.dataTransfer.files);
+    });
+
+    imageFileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files);
+    });
+
+    function handleFiles(files) {
+        const fileList = Array.from(files);
+
+        if (currentImages.length + fileList.length > 10) {
+            showToast('Maximum 10 images allowed per project', 'error');
+            return;
+        }
+
+        fileList.forEach(file => {
+            if (!file.type.startsWith('image/')) {
+                showToast('Only image files are allowed', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentImages.push(e.target.result);
+                renderImagePreviews();
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function renderImagePreviews() {
+        imagePreviewContainer.innerHTML = '';
+        currentImages.forEach((imgSrc, index) => {
+            const thumb = document.createElement('div');
+            thumb.className = 'preview-thumb';
+            thumb.style.backgroundImage = `url('${imgSrc}')`;
+
+            thumb.innerHTML = `
+                <div class="remove-overlay">
+                    <button type="button" onclick="removeImage(${index})" class="text-rose-400 hover:text-rose-300 text-sm p-1.5 rounded-lg bg-black/60">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `;
+            imagePreviewContainer.appendChild(thumb);
+        });
+    }
+
+    window.removeImage = function (index) {
+        currentImages.splice(index, 1);
+        renderImagePreviews();
+    };
+
+    projectForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const words = projectDescInput.value.trim().split(/\s+/).filter(w => w.length > 0);
+        if (words.length > 100) {
+            showToast('Project description exceeds 100 words', 'error');
+            return;
+        }
+
+        const id = projectIdInput.value || 'proj_' + Date.now();
+        const title = projectTitleInput.value.trim();
+        const description = projectDescInput.value.trim();
+        const tags = projectTagsInput.value.split(',').map(t => t.trim()).filter(t => t.length > 0);
+        const demoUrl = projectDemoInput.value.trim();
+        const githubUrl = projectGithubInput.value.trim();
+
+        const newProject = {
+            id,
+            title,
+            description,
+            tags,
+            demoUrl,
+            githubUrl,
+            images: currentImages.length > 0 ? currentImages : ['https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop']
+        };
+
+        const existingIndex = projects.findIndex(p => p.id === id);
+        if (existingIndex > -1) {
+            projects[existingIndex] = newProject;
+            showToast('Project updated live across all devices', 'success');
+        } else {
+            projects.unshift(newProject);
+            showToast('New project synced live', 'success');
+        }
+
+        saveProjectsToFirebase();
+        closeModal();
+    });
+
+    // 6. Toast Notification Subsystem
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast px-4 py-3 rounded-xl border backdrop-blur-md shadow-xl text-xs font-mono flex items-center gap-3 pointer-events-auto ${
+            type === 'success' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' :
+            type === 'error' ? 'bg-rose-500/10 border-rose-500/30 text-rose-400' :
+            'bg-electric-500/10 border-electric-500/30 text-electric-400'
+        }`;
+
+        const icon = type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info';
+
+        toast.innerHTML = `
+            <i class="fa-solid ${icon} text-sm"></i>
+            <span>${message}</span>
+        `;
+
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('toast-exit');
+            setTimeout(() => toast.remove(), 350);
+        }, 3000);
+    }
+
+    checkAuth();
+});
