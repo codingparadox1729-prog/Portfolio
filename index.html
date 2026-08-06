@@ -9,6 +9,7 @@
       content="Portfolio of Rishabh Dimri - Web Development Freelancer & B.Tech CSE (AI & ML) Student at Dev Bhoomi Uttarakhand University. Building high-performance, modern websites."
     />
 
+    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -16,6 +17,7 @@
       rel="stylesheet"
     />
 
+    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -49,26 +51,34 @@
       };
     </script>
 
+    <!-- Font Awesome Icons CDN -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+
+    <!-- AOS (Animate On Scroll) CSS -->
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <!-- Custom CSS Stylesheet -->
     <link rel="stylesheet" href="style.css" />
   </head>
   <body
     class="bg-dark-900 text-slate-100 font-sans selection:bg-electric-500 selection:text-white antialiased overflow-x-hidden relative"
   >
+    <!-- Canvas for Mouse Particle Effect -->
     <canvas
       id="particleCanvas"
       class="fixed inset-0 pointer-events-none z-0 opacity-40"
     ></canvas>
 
+    <!-- Custom Cursor Glow Follower -->
     <div
       id="cursorGlow"
       class="fixed pointer-events-none z-50 w-80 h-80 rounded-full bg-electric-500/10 blur-[100px] transition-transform duration-100 ease-out -translate-x-1/2 -translate-y-1/2 hidden lg:block"
     ></div>
 
+    <!-- Background Animated Gradient Blobs -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
       <div
         class="blob blob-1 absolute top-10 -left-20 w-96 h-96 bg-neon-purple/20 rounded-full blur-[120px] animate-pulse-slow"
@@ -89,11 +99,12 @@
       <div
         class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between glass-nav rounded-b-2xl border-b border-white/10 mt-0 lg:mt-2 lg:rounded-2xl"
       >
+        <!-- Logo -->
         <a href="#home" class="flex items-center gap-3 group">
           <div
-            class="w-10 h-10 rounded-xl bg-gradient-to-tr from-electric-500 to-neon-purple flex items-center justify-center text-white font-mono font-bold text-xl shadow-lg shadow-electric-500/25 group-hover:scale-105 transition-transform duration-300"
+            class="w-10 h-10 rounded-xl bg-gradient-to-tr from-electric-500 to-neon-purple flex items-center justify-center text-white font-mono font-bold text-xl shadow-lg shadow-electric-500/25 group-hover:scale-105 transition-transform duration-300 overflow-hidden"
           >
-            RD
+            <img src="logo.jpeg" alt="Logo" class="w-full h-full object-cover" />
           </div>
           <div class="flex flex-col">
             <span
@@ -107,6 +118,7 @@
           </div>
         </a>
 
+        <!-- Desktop Navigation Links -->
         <nav class="hidden md:flex items-center gap-8">
           <a
             href="#home"
@@ -140,6 +152,7 @@
           >
         </nav>
 
+        <!-- Header Action Buttons -->
         <div class="hidden md:flex items-center gap-4">
           <a
             href="#contact"
@@ -149,6 +162,7 @@
           </a>
         </div>
 
+        <!-- Mobile Hamburger Toggle -->
         <button
           id="mobileMenuBtn"
           class="md:hidden text-slate-300 hover:text-white text-2xl focus:outline-none p-2"
@@ -158,6 +172,7 @@
         </button>
       </div>
 
+      <!-- Mobile Drawer Navigation -->
       <div
         id="mobileDrawer"
         class="fixed inset-x-0 top-20 bg-dark-800/95 backdrop-blur-xl border-b border-white/10 p-6 flex flex-col gap-4 transform -translate-y-full opacity-0 pointer-events-none transition-all duration-300 md:hidden z-30"
@@ -210,6 +225,7 @@
       </div>
     </header>
 
+    <!-- Main Content Wrapper -->
     <main class="relative z-10 pt-20">
       <!-- HERO SECTION -->
       <section
@@ -217,6 +233,7 @@
         class="min-h-[calc(100vh-5rem)] flex items-center justify-center relative px-4 sm:px-6 lg:px-8 py-16 overflow-hidden"
       >
         <div class="max-w-5xl mx-auto text-center flex flex-col items-center">
+          <!-- Status Badge -->
           <div
             data-aos="fade-down"
             data-aos-duration="800"
@@ -232,6 +249,7 @@
             >
           </div>
 
+          <!-- Main Name Header -->
           <h1
             data-aos="fade-up"
             data-aos-duration="1000"
@@ -244,6 +262,7 @@
             >
           </h1>
 
+          <!-- Dynamic Typing Subtitle -->
           <div
             data-aos="fade-up"
             data-aos-delay="200"
@@ -259,6 +278,7 @@
             >
           </div>
 
+          <!-- University Affiliation -->
           <p
             data-aos="fade-up"
             data-aos-delay="300"
@@ -268,6 +288,7 @@
             B.Tech CSE (AI & ML) Student • Dev Bhoomi Uttarakhand University
           </p>
 
+          <!-- Confident Professional Intro -->
           <p
             data-aos="fade-up"
             data-aos-delay="400"
@@ -278,6 +299,7 @@
             pixel-perfect design precision and clean, maintainable code.
           </p>
 
+          <!-- Hero CTA Buttons -->
           <div
             data-aos="fade-up"
             data-aos-delay="500"
@@ -300,6 +322,294 @@
               <span>Hire Me</span>
             </a>
           </div>
+
+          <!-- Quick Tech Stack Pills -->
+          <div
+            data-aos="fade-up"
+            data-aos-delay="600"
+            class="mt-16 pt-8 border-t border-white/10 flex flex-wrap items-center justify-center gap-6 text-slate-400 text-sm"
+          >
+            <span
+              class="font-mono text-xs uppercase tracking-wider text-slate-500"
+              >Tech Stack Focus:</span
+            >
+            <span
+              class="flex items-center gap-2 hover:text-electric-400 transition-colors"
+              ><i class="fa-brands fa-react text-cyan-400"></i> React</span
+            >
+            <span
+              class="flex items-center gap-2 hover:text-electric-400 transition-colors"
+              ><i class="fa-brands fa-node-js text-emerald-400"></i>
+              Node.js</span
+            >
+            <span
+              class="flex items-center gap-2 hover:text-electric-400 transition-colors"
+              ><i class="fa-brands fa-js text-amber-400"></i> JavaScript</span
+            >
+            <span
+              class="flex items-center gap-2 hover:text-electric-400 transition-colors"
+              ><i class="fa-solid fa-database text-emerald-500"></i>
+              MongoDB</span
+            >
+            <span
+              class="flex items-center gap-2 hover:text-electric-400 transition-colors"
+              ><i class="fa-solid fa-robot text-neon-purple"></i> AI & ML</span
+            >
+          </div>
+
+          <!-- Scroll Indicator -->
+          <a
+            href="#about"
+            class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-slate-500 hover:text-electric-400 transition-colors group"
+          >
+            <span class="text-xs font-mono uppercase tracking-widest"
+              >Scroll</span
+            >
+            <div
+              class="w-5 h-9 rounded-full border-2 border-slate-600 group-hover:border-electric-400 p-1 flex justify-center"
+            >
+              <div
+                class="w-1 h-2 rounded-full bg-electric-400 animate-scroll-bounce"
+              ></div>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- ABOUT SECTION -->
+      <section
+        id="about"
+        class="py-24 relative px-4 sm:px-6 lg:px-8 border-t border-white/5"
+      >
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-16">
+            <h2
+              data-aos="fade-up"
+              class="text-xs font-mono text-electric-400 uppercase tracking-widest mb-3"
+            >
+              01. About Me
+            </h2>
+            <h3
+              data-aos="fade-up"
+              data-aos-delay="100"
+              class="text-3xl sm:text-5xl font-bold text-white tracking-tight"
+            >
+              Engineering Digital Experiences
+            </h3>
+          </div>
+
+          <div class="grid md:grid-cols-12 gap-12 items-center">
+            <!-- About Profile Visual Card -->
+            <div data-aos="fade-right" class="md:col-span-5 relative group">
+              <div
+                class="absolute -inset-1 bg-gradient-to-r from-electric-500 to-neon-purple rounded-3xl blur-xl opacity-30 group-hover:opacity-60 transition duration-500"
+              ></div>
+              <div
+                class="relative glass-card rounded-3xl p-8 border border-white/10 flex flex-col items-center text-center overflow-hidden"
+              >
+                <!-- Avatar Placeholder with Geometric Glow -->
+                <div
+                  class="w-40 h-40 rounded-full bg-gradient-to-tr from-dark-700 via-dark-600 to-electric-500/30 border-2 border-electric-500/40 p-2 mb-6 relative"
+                >
+                  <div
+                    class="w-full h-full rounded-full bg-dark-900 flex items-center justify-center text-5xl text-electric-400 font-mono font-bold"
+                  >
+                    <i class="fa-solid fa-code"></i>
+                  </div>
+                </div>
+                <h4 class="text-2xl font-bold text-white mb-1">
+                  Rishabh Dimri
+                </h4>
+                <p class="text-sm text-electric-400 font-mono mb-4">
+                  Web Development Freelancer
+                </p>
+                <div
+                  class="w-full pt-4 border-t border-white/10 flex justify-around text-center"
+                >
+                  <div>
+                    <span
+                      class="block text-2xl font-bold text-white font-mono"
+                      id="counterProjects"
+                      >0</span
+                    >
+                    <span class="text-xs text-slate-400"
+                      >Completed Projects</span
+                    >
+                  </div>
+                  <div class="border-r border-white/10"></div>
+                  <div>
+                    <span class="block text-2xl font-bold text-white font-mono"
+                      >100%</span
+                    >
+                    <span class="text-xs text-slate-400"
+                      >Client Satisfaction</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- About Narrative & Pillars -->
+            <div data-aos="fade-left" class="md:col-span-7 flex flex-col gap-6">
+              <p class="text-slate-300 text-lg leading-relaxed">
+                I am a dedicated
+                <strong class="text-white">Freelance Web Developer</strong> and
+                a
+                <strong class="text-white">B.Tech CSE (AI & ML) Student</strong>
+                at Dev Bhoomi Uttarakhand University. My journey bridges
+                software engineering, design aesthetic, and artificial
+                intelligence to construct high-value web applications.
+              </p>
+              <p class="text-slate-400 text-base leading-relaxed">
+                Passionate about solving real-world complex problems, I design
+                and engineer modern web systems that prioritize fast
+                performance, fluid interaction, and seamless user experiences. I
+                actively learn and integrate cutting-edge frameworks, tools, and
+                AI technologies to stay at the vanguard of the digital
+                landscape.
+              </p>
+
+              <!-- Key Pillars Grid -->
+              <div class="grid sm:grid-cols-2 gap-4 pt-4">
+                <div
+                  class="glass-card p-4 rounded-2xl border border-white/5 flex items-start gap-4"
+                >
+                  <div
+                    class="p-3 rounded-xl bg-electric-500/10 text-electric-400 text-xl"
+                  >
+                    <i class="fa-solid fa-laptop-code"></i>
+                  </div>
+                  <div>
+                    <h5 class="text-white font-semibold text-sm mb-1">
+                      Freelance Engineer
+                    </h5>
+                    <p class="text-xs text-slate-400">
+                      Delivering tailor-made websites for clients worldwide.
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="glass-card p-4 rounded-2xl border border-white/5 flex items-start gap-4"
+                >
+                  <div
+                    class="p-3 rounded-xl bg-neon-purple/10 text-neon-purple text-xl"
+                  >
+                    <i class="fa-solid fa-brain"></i>
+                  </div>
+                  <div>
+                    <h5 class="text-white font-semibold text-sm mb-1">
+                      AI & ML Focus
+                    </h5>
+                    <p class="text-xs text-slate-400">
+                      Integrating smart algorithms and AI workflow automation.
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="glass-card p-4 rounded-2xl border border-white/5 flex items-start gap-4"
+                >
+                  <div
+                    class="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 text-xl"
+                  >
+                    <i class="fa-solid fa-bolt"></i>
+                  </div>
+                  <div>
+                    <h5 class="text-white font-semibold text-sm mb-1">
+                      Performance Mindset
+                    </h5>
+                    <p class="text-xs text-slate-400">
+                      Optimizing core web vitals, smooth CSS animations & SEO.
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="glass-card p-4 rounded-2xl border border-white/5 flex items-start gap-4"
+                >
+                  <div
+                    class="p-3 rounded-xl bg-neon-cyan/10 text-neon-cyan text-xl"
+                  >
+                    <i class="fa-solid fa-infinity"></i>
+                  </div>
+                  <div>
+                    <h5 class="text-white font-semibold text-sm mb-1">
+                      Continuous Growth
+                    </h5>
+                    <p class="text-xs text-slate-400">
+                      Constantly updating skills with modern frameworks and
+                      stacks.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SKILLS SECTION -->
+      <section
+        id="skills"
+        class="py-24 relative px-4 sm:px-6 lg:px-8 bg-dark-800/50 border-t border-white/5"
+      >
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-16">
+            <h2
+              data-aos="fade-up"
+              class="text-xs font-mono text-electric-400 uppercase tracking-widest mb-3"
+            >
+              02. Tech Arsenal
+            </h2>
+            <h3
+              data-aos="fade-up"
+              data-aos-delay="100"
+              class="text-3xl sm:text-5xl font-bold text-white tracking-tight"
+            >
+              Skills & Technologies
+            </h3>
+            <p
+              data-aos="fade-up"
+              data-aos-delay="200"
+              class="text-slate-400 mt-4 max-w-xl mx-auto text-sm"
+            >
+              Comprehensive proficiency across modern front-end, back-end,
+              database architectures, and developer tooling.
+            </p>
+          </div>
+
+          <div
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6"
+            id="skillsGrid"
+          >
+            <!-- Skills items ... -->
+          </div>
+        </div>
+      </section>
+
+      <!-- SERVICES SECTION -->
+      <section
+        id="services"
+        class="py-24 relative px-4 sm:px-6 lg:px-8 border-t border-white/5"
+      >
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-16">
+            <h2
+              data-aos="fade-up"
+              class="text-xs font-mono text-electric-400 uppercase tracking-widest mb-3"
+            >
+              03. Solutions I Offer
+            </h2>
+            <h3
+              data-aos="fade-up"
+              data-aos-delay="100"
+              class="text-3xl sm:text-5xl font-bold text-white tracking-tight"
+            >
+              Services & Expertise
+            </h3>
+          </div>
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Services items ... -->
+          </div>
         </div>
       </section>
 
@@ -317,7 +627,7 @@
                 data-aos="fade-up"
                 class="text-xs font-mono text-electric-400 uppercase tracking-widest mb-3"
               >
-                Selected Works
+                04. Selected Works
               </h2>
               <h3
                 data-aos="fade-up"
@@ -332,12 +642,14 @@
               data-aos-delay="200"
               class="text-slate-400 text-sm mt-4 md:mt-0 max-w-md"
             >
-              Real-time portfolio showcase updated dynamically via Firebase Realtime Database.
+              Dynamic project showcase auto-synchronized in real-time across all devices via Firebase Database.
             </p>
           </div>
 
           <!-- Projects Dynamic Container -->
-          <div class="grid md:grid-cols-2 gap-8" id="projectsContainer"></div>
+          <div class="grid md:grid-cols-2 gap-8" id="projectsContainer">
+            <!-- Real-time projects render here -->
+          </div>
         </div>
       </section>
 
@@ -352,7 +664,7 @@
               data-aos="fade-up"
               class="text-xs font-mono text-electric-400 uppercase tracking-widest mb-3"
             >
-              Get In Touch
+              05. Get In Touch
             </h2>
             <h3
               data-aos="fade-up"
@@ -362,74 +674,38 @@
               Let's Build Something Great
             </h3>
           </div>
-
-          <div class="grid lg:grid-cols-12 gap-12">
-            <div data-aos="fade-right" class="lg:col-span-5 flex flex-col gap-6">
-              <div
-                class="glass-card p-6 rounded-3xl border border-white/10 flex items-center gap-5"
-              >
-                <div
-                  class="w-14 h-14 rounded-2xl bg-electric-500/10 text-electric-400 text-2xl flex items-center justify-center flex-shrink-0"
-                >
-                  <i class="fa-solid fa-user"></i>
-                </div>
-                <div>
-                  <span class="text-xs font-mono text-slate-400 block mb-0.5">Name</span>
-                  <h5 class="text-white font-bold text-base">Rishabh Dimri</h5>
-                </div>
-              </div>
-            </div>
-
-            <div data-aos="fade-left" class="lg:col-span-7">
-              <form
-                id="contactForm"
-                class="glass-card p-8 rounded-3xl border border-white/10 flex flex-col gap-6"
-              >
-                <div class="grid sm:grid-cols-2 gap-6">
-                  <input
-                    type="text"
-                    required
-                    placeholder="Your Name"
-                    class="bg-dark-700/80 border border-white/10 rounded-xl px-4 py-3 text-white text-sm"
-                  />
-                  <input
-                    type="email"
-                    required
-                    placeholder="Your Email"
-                    class="bg-dark-700/80 border border-white/10 rounded-xl px-4 py-3 text-white text-sm"
-                  />
-                </div>
-                <textarea
-                  rows="5"
-                  required
-                  placeholder="Your Message..."
-                  class="bg-dark-700/80 border border-white/10 rounded-xl px-4 py-3 text-white text-sm resize-none"
-                ></textarea>
-                <button
-                  type="submit"
-                  class="py-4 rounded-xl bg-gradient-to-r from-electric-500 to-neon-purple text-white font-semibold"
-                >
-                  Send Message
-                </button>
-              </form>
-            </div>
-          </div>
+          <!-- Contact Form ... -->
         </div>
       </section>
     </main>
 
+    <!-- Floating Sidebar & Footer -->
     <footer class="bg-dark-800 border-t border-white/10 py-12 relative z-10">
-      <div class="max-w-7xl mx-auto px-4 text-center text-slate-400 text-sm">
-        Made with ❤️ by <strong class="text-white">Rishabh Dimri</strong>
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-8 h-8 rounded-lg bg-gradient-to-tr from-electric-500 to-neon-purple flex items-center justify-center text-white font-mono font-bold text-sm"
+          >
+            RD
+          </div>
+          <span class="text-slate-400 text-sm"
+            >Made with ❤️ by
+            <strong class="text-white">Rishabh Dimri</strong></span
+          >
+        </div>
       </div>
     </footer>
 
-    <!-- GSAP & AOS CDNs -->
+    <!-- GSAP CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- AOS CDN -->
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 
-    <!-- Firebase Integrated Portfolio Main Engine -->
+    <!-- Main JS Module -->
     <script type="module" src="script.js"></script>
   </body>
 </html>
