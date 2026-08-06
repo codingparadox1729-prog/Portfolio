@@ -302,24 +302,6 @@
     </div>
 
     <!-- Admin Script -->
-    <script src="admin.js"></script>
-    <script type = "module">
-        import { db } from "./firebase.js";
-import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-// Function to handle save button click
-async function updateHomePageData(newTextContent) {
-  try {
-    // Saves or overwrites the document named 'content' inside collection 'portfolio'
-    await setDoc(doc(db, "portfolio", "content"), {
-      aboutText: newTextContent,
-      updatedAt: new Date()
-    });
-    alert("Changes saved live across all devices!");
-  } catch (error) {
-    console.error("Error saving data: ", error);
-  }
-}
-    </script>
+   <script type="module" src="admin.js"></script>
 </body>
 </html>
