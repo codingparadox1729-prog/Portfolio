@@ -6,8 +6,8 @@ import { database, ref, set, push, onValue, remove, update } from "./firebase-co
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    const ADMIN_USER = "admin";
-    const ADMIN_PASS = "rishabh123";
+    const ADMIN_USER = "codingparadox";
+    const ADMIN_PASS = "#Rishabh@8725";
 
     let currentImages = [];
     let projectsMap = {};
