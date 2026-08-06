@@ -3,7 +3,6 @@
    Theme: Minimal Dark Glassmorphism, Admin Controls & Dynamic Drag-Drop UI
    ========================================================================== */
 
-/* Custom CSS Variables */
 :root {
     --bg-dark-900: #05070d;
     --bg-dark-800: #0b0f19;
@@ -16,7 +15,6 @@
     --shadow-glow: 0 0 25px rgba(14, 165, 233, 0.15);
 }
 
-/* Baseline Reset */
 html {
     color-scheme: dark;
 }
@@ -29,7 +27,6 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -48,15 +45,10 @@ body {
     background: var(--electric-blue);
 }
 
-/* Selection Color */
 ::selection {
     background: var(--electric-blue);
     color: #ffffff;
 }
-
-/* ==========================================================================
-   Glassmorphism Surfaces
-   ========================================================================== */
 
 .glass-card {
     background: var(--bg-dark-card);
@@ -71,19 +63,11 @@ body {
     border-color: var(--border-glass-hover);
 }
 
-/* ==========================================================================
-   Drag & Drop Active State Highlights
-   ========================================================================== */
-
 .drop-zone-active {
     border-color: var(--electric-blue) !important;
     background-color: rgba(14, 165, 233, 0.12) !important;
     transform: scale(1.01);
 }
-
-/* ==========================================================================
-   Toast Notification Micro-Animations
-   ========================================================================== */
 
 .toast {
     animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -114,10 +98,6 @@ body {
         opacity: 0;
     }
 }
-
-/* ==========================================================================
-   Image Gallery Preview Thumbnails
-   ========================================================================== */
 
 .preview-thumb {
     position: relative;
@@ -150,10 +130,6 @@ body {
 .preview-thumb:hover .remove-overlay {
     opacity: 1;
 }
-
-/* ==========================================================================
-   Responsive Utilities
-   ========================================================================== */
 
 @media (max-width: 768px) {
     .glass-card {
