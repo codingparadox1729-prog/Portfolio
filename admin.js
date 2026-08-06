@@ -11,6 +11,43 @@ import {
 let projects = [];
 let editingProjectId = null;
 let pendingDeleteId = null;
+//
+// Add these to your DOM elements section at the top of admin.js
+const loginForm = document.getElementById('loginForm');
+const loginSection = document.getElementById('loginSection'); // Or whatever container holds your login card
+const dashboardSection = document.getElementById('dashboardSection'); // The admin panel wrapper
+
+// Handle Admin Authentication
+if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // Stops page from refreshing on submit
+
+        const usernameInput = document.getElementById('usernameInput')?.value || '';
+        const passwordInput = document.getElementById('passwordInput')?.value || '';
+
+        // Replace 'admin' and 'admin123' with your preferred credentials
+        if (usernameInput === 'admin' && passwordInput === 'admin123') {
+            localStorage.setItem('isAdminLoggedIn', 'true');
+            showDashboard();
+            showToast('Logged in successfully!', 'success');
+        } else {
+            showToast('Invalid username or password', 'error');
+        }
+    });
+}
+
+// Function to toggle views based on login status
+function showDashboard() {
+    if (localStorage.getItem('isAdminLoggedIn') === 'true') {
+        if (loginSection) loginSection.classList.add('hidden');
+        if (dashboardSection) dashboardSection.classList.remove('hidden');
+        loadProjects(); // Fetch projects from Firestore upon login
+    }
+}
+
+// Check session on page load
+showDashboard();
+//
 
 // DOM Elements
 const projectForm = document.getElementById('projectForm');
