@@ -1,7 +1,11 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+/* ==========================================================================
+   Firebase Infrastructure & Realtime Database Initialization
+   ========================================================================== */
 
-// Replace the values below with your actual keys from Step 3
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+// TODO: Replace with your actual Firebase project configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBcb9szMGtzurNupPhiG_ZPcTVYcrjv7jA",
   authDomain: "codingparadox-portfolio.firebaseapp.com",
@@ -12,5 +16,8 @@ const firebaseConfig = {
   measurementId: "G-EER0GMMXR5"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+const db = getDatabase(app);
+
+export { db, ref, onValue, set };
