@@ -303,5 +303,33 @@
 
     <!-- Admin Script -->
     <script src="admin.js"></script>
+    <!-- Inside admin.html -->
+<script type="module">
+  import { db, doc, setDoc } from "./firebase-config.js";
+
+  // Select your admin form or save button
+  const saveBtn = document.getElementById("save-btn"); // Replace with your button ID
+
+  saveBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    // Get input values from your admin inputs
+    const titleInput = document.getElementById("title-input").value;
+    const bioInput = document.getElementById("bio-input").value;
+
+    try {
+      // Saves data into a collection called "portfolio" in a document named "home"
+      await setDoc(doc(db, "portfolio", "home"), {
+        title: titleInput,
+        bio: bioInput,
+        updatedAt: new Date()
+      });
+      alert("Changes updated live on all devices!");
+    } catch (error) {
+      console.error("Error saving data: ", error);
+      alert("Failed to save changes.");
+    }
+  });
+</script>
 </body>
 </html>
