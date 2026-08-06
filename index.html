@@ -1495,5 +1495,24 @@
 
     <!-- Main JS Application Script -->
     <script src="script.js"></script>
+    <!-- Inside index.html -->
+<script type="module">
+  import { db, doc, onSnapshot } from "./firebase-config.js";
+
+  // Real-time listener: Triggers immediately on load AND whenever data changes in Admin
+  onSnapshot(doc(db, "portfolio", "home"), (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+
+      // Target elements on your home page and update their text
+      if (data.title) {
+        document.getElementById("home-title").innerText = data.title;
+      }
+      if (data.bio) {
+        document.getElementById("home-bio").innerText = data.bio;
+      }
+    }
+  });
+</script>
   </body>
 </html>
