@@ -1495,5 +1495,19 @@
 
     <!-- Main JS Application Script -->
     <script src="script.js"></script>
+    <script type="module">
+      import { db } from "./firebase.js";
+import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+// Listen to changes in real-time
+onSnapshot(doc(db, "portfolio", "content"), (docSnap) => {
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    
+    // Update your HTML elements dynamically
+    document.getElementById("about-section").innerText = data.aboutText;
+  }
+});
+    </script>
   </body>
 </html>
