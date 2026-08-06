@@ -1496,18 +1496,51 @@
     <!-- Main JS Application Script -->
     <script src="script.js"></script>
     <script type="module">
-      import { db } from "./firebase.js";
-import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { db } from "./firebase.js";
+  import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Listen to changes in real-time
-onSnapshot(doc(db, "portfolio", "content"), (docSnap) => {
-  if (docSnap.exists()) {
-    const data = docSnap.data();
-    
-    // Update your HTML elements dynamically
-    document.getElementById("about-section").innerText = data.aboutText;
-  }
-});
-    </script>
+  const projectsContainer = document.getElementById("projectsContainer");
+
+  // Listen for real-time changes in the 'projects' collection
+  onSnapshot(collection(db, "projects"), (snapshot) => {
+    if (snapshot.empty) return;
+
+    projectsContainer.innerHTML = ""; // Clear static placeholder content
+
+    snapshot.forEach((doc) => {
+      const project = doc.data();
+      const thumbnail = (project.images && project.images.length > 0)
+        ? project.images[0]
+        : 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop';
+
+      const tagsHTML = (project.tags || [])
+        .map(tag => `<span class="px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-mono text-slate-300">${tag}</span>`)
+        .join("");
+
+      const projectCard = `
+        <div class="project-card glass-card rounded-3xl border border-white/10 overflow-hidden flex flex-col group hover:border-electric-500/50 transition-all duration-500">
+          <div class="relative overflow-hidden h-64 bg-dark-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent z-10 opacity-80"></div>
+            <div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-700" style="background-image: url('${thumbnail}');"></div>
+          </div>
+          <div class="p-8 flex-1 flex flex-col justify-between">
+            <div>
+              <h4 class="text-2xl font-bold text-white mb-3 group-hover:text-electric-400 transition-colors">${project.title}</h4>
+              <p class="text-slate-300 text-sm leading-relaxed mb-6">${project.description}</p>
+            </div>
+            <div>
+              <div class="flex flex-wrap gap-2 mb-6">${tagsHTML}</div>
+              <div class="flex items-center gap-4 pt-4 border-t border-white/10">
+                ${project.demoUrl ? `<a href="${project.demoUrl}" target="_blank" class="flex-1 py-3 rounded-xl bg-electric-500 hover:bg-electric-600 text-white text-center font-medium text-sm transition-colors flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo</a>` : ''}
+                ${project.githubUrl ? `<a href="${project.githubUrl}" target="_blank" class="px-4 py-3 rounded-xl glass-card hover:bg-white/10 text-slate-300 hover:text-white text-sm border border-white/10 transition-colors"><i class="fa-brands fa-github text-lg"></i></a>` : ''}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      projectsContainer.insertAdjacentHTML("beforeend", projectCard);
+    });
+  });
+</script>
   </body>
 </html>
