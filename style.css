@@ -200,6 +200,15 @@ aside a {
     -webkit-backdrop-filter: blur(8px);
 }
 
+/* Floating Social Sidebar Styling */
+aside a i {
+  transition: transform 0.25s ease;
+}
+
+aside a:hover i {
+  transform: scale(1.15) rotate(4deg);
+}
+
 /* ==========================================================================
    Responsive Utilities & Touch Fixes
    ========================================================================== */
