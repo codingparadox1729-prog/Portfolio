@@ -6,6 +6,7 @@ import { getDatabase, ref, set, push, onValue, remove, update } from "https://ww
 const firebaseConfig = {
   apiKey: "AIzaSyBcb9szMGtzurNupPhiG_ZPcTVYcrjv7jA",
   authDomain: "codingparadox-portfolio.firebaseapp.com",
+  databaseURL: "https://codingparadox-portfolio-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "codingparadox-portfolio",
   storageBucket: "codingparadox-portfolio.firebasestorage.app",
   messagingSenderId: "918702015853",
